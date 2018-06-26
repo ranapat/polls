@@ -8,7 +8,9 @@
     "tdd": "jest test/unit/specs --watch",
     "test": "npm run unit",
     "build": "webpack --config build/webpack.prod.js",
-    "dev": "node build/server.js",
+    "client": "node build/server.js",
+    "proxy": "node ./proxy/bin/www",
+    "dev": "npm run proxy & npm run client",
     "lint": "xo **/client/**/*.{vue,js} !node_modules/**",
     "docs-init": "docsify init ./docs",
     "docs-serve": "docsify serve docs"

@@ -24,6 +24,18 @@ $ npm install
 $ npm run dev
 ```
 
+### To client:
+
+```bash
+$ npm run client
+```
+
+### To proxy:
+
+```bash
+$ npm run proxy
+```
+
 ### To build for production:
 
 ```bash
@@ -73,3 +85,4 @@ $ npm run docs-serve
 - split store into multiple modules maybe to make it cleaner
 - generate documentation
 - multilanguage support
+- fix preview ui

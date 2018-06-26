@@ -2,7 +2,7 @@
  * Store states
  */
 
-import { view, filter } from '../config'
+import { view } from '../config'
 
 const state = {
   entryPoints: null,

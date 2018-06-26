@@ -2,8 +2,6 @@
  * Store mutations
  */
 
-import Vue from 'vue'
-
 const types = {
   startLoadingEntryPoints: 'START_LOADING_ENTRY_POINTS',
   stopLoadingEntryPoints: 'STOP_LOADING_ENTRY_POINTS',
@@ -78,12 +76,12 @@ const mutations = {
       state.question = question
     }
 
-    const questionsItems = [ ...state.questions.items ]
+    const questionsItems = [...state.questions.items]
     const questions = {
       items: questionsItems,
       navigation: state.questions.navigation
     }
-    for (let _question of questionsItems) {
+    for (const _question of questionsItems) {
       if (_question.url === question.url) {
         questionsItems[questionsItems.indexOf(_question)] = question
 

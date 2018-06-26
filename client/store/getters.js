@@ -2,7 +2,7 @@
  * Store getters
  */
 
-import { view, filter } from '../config'
+import { view } from '../config'
 
 const getters = {
   entryPoints (state) {

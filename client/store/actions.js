@@ -9,23 +9,13 @@
 import axios from 'axios'
 import parseLinkHeader from 'parse-link-header'
 
-import { api, filter as filterConfig } from '../config'
+import { api } from '../config'
 import { types } from './mutations'
 
 const actions = {
   populateEntryPoints ({ commit, getters }) {
-    const entryPoints = getters.entryPoints;
-    if (entryPoints !== null) {
-      commit(types.setStatus, 'getting entry points from memory ...')
-
-      return new Promise((resolve, reject) => {
-        if (entryPoints.questions_url) {
-          resolve()
-        } else {
-          reject()
-        }
-      })
-    } else {
+    const entryPoints = getters.entryPoints
+    if (entryPoints === null) {
       commit(types.startLoadingEntryPoints)
       commit(types.populateEntryPoints, {})
       commit(types.setEntryPointsLoadError, null)
@@ -51,6 +41,16 @@ const actions = {
           }
         )
       })
+    } else {
+      commit(types.setStatus, 'getting entry points from memory ...')
+
+      return new Promise((resolve, reject) => {
+        if (entryPoints.questions_url) {
+          resolve()
+        } else {
+          reject()
+        }
+      })
     }
   },
 
@@ -65,12 +65,12 @@ const actions = {
       dispatch('populateEntryPoints', null, { root: true })
         .then(() => {
           axios.get(
-            api.rootApiEntryPoint + (url !== undefined ? url : getters.entryPoints.questions_url)
+            api.rootApiEntryPoint + (url === undefined ? getters.entryPoints.questions_url : url)
           ).then(
             response => {
               commit(types.populateQuestions, {
                 items: response.data,
-                navigation: response.headers.link !== undefined ? parseLinkHeader(response.headers.link) : null
+                navigation: response.headers.link === undefined ? null : parseLinkHeader(response.headers.link)
               })
               commit(types.stopLoadingQuestions)
 
@@ -86,9 +86,9 @@ const actions = {
               reject()
             })
         })
-        .catch(() => {
+        .catch(err => {
           commit(types.stopLoadingQuestions)
-          commit(types.setQuestionsLoadError, error)
+          commit(types.setQuestionsLoadError, err)
 
           commit(types.setStatus, 'questions error')
 
@@ -117,18 +117,18 @@ const actions = {
               commit(types.setStatus, 'question loaded')
 
               resolve()
-            }, error => {
+            }, err => {
               commit(types.stopLoadingQuestion)
-              commit(types.setQuestionLoadError, error)
+              commit(types.setQuestionLoadError, err)
 
               commit(types.setStatus, 'question error')
 
               reject()
             })
         })
-        .catch(() => {
+        .catch(err => {
           commit(types.stopLoadingQuestion)
-          commit(types.setQuestionLoadError, error)
+          commit(types.setQuestionLoadError, err)
 
           commit(types.setStatus, 'question error')
 
@@ -142,17 +142,17 @@ const actions = {
       const questions = getters.questions.items
 
       let question
-      for (let _question of questions) {
+      for (const _question of questions) {
         if (_question.url.replace(/\/questions\/([0-9]+)/, '$1') === id) {
           question = _question
-          break;
+          break
         }
       }
 
-      if (question !== undefined) {
-        resolve(question)
-      } else {
+      if (question === undefined) {
         reject()
+      } else {
+        resolve(question)
       }
     })
   },
@@ -175,7 +175,7 @@ const actions = {
                 response.data.url.replace(/\/questions\/([0-9]+)\/choices\/[0-9]+/, '$1'),
                 { root: true }
               ).then(responseQuestion => {
-                for (let choice of responseQuestion.choices) {
+                for (const choice of responseQuestion.choices) {
                   if (choice.url === response.data.url) {
                     choice.votes = response.data.votes
                     break
@@ -195,18 +195,18 @@ const actions = {
 
                 reject()
               })
-            }, error => {
+            }, err => {
               commit(types.stopVoting)
-              commit(types.setVotingError, error)
+              commit(types.setVotingError, err)
 
               commit(types.setStatus, 'voting error')
 
               reject()
             })
         })
-        .catch(() => {
+        .catch(err => {
           commit(types.stopVoting)
-          commit(types.setVotingError, error)
+          commit(types.setVotingError, err)
 
           commit(types.setStatus, 'voting error')
 
@@ -247,7 +247,7 @@ const actions = {
     commit(types.closeStatuses)
 
     commit(types.setStatus, 'close statuses')
-  },
+  }
 }
 
 export default actions

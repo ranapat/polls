@@ -81,7 +81,7 @@ $ npm run docs-serve
 #### ToDo:
 
 - implement e2e
-- bit more unit tests
+- bit more unit tests :)
 - split store into multiple modules maybe to make it cleaner
 - generate documentation
 - multilanguage support

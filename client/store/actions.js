@@ -31,9 +31,9 @@ const actions = {
             commit(types.setStatus, 'entry points loaded')
 
             resolve()
-          }, error => {
+          }, err => {
             commit(types.stopLoadingEntryPoints)
-            commit(types.setEntryPointsLoadError, error)
+            commit(types.setEntryPointsLoadError, err)
 
             commit(types.setStatus, 'entry points error')
 
@@ -65,21 +65,21 @@ const actions = {
       dispatch('populateEntryPoints', null, { root: true })
         .then(() => {
           axios.get(
-            api.rootApiEntryPoint + (url === undefined ? getters.entryPoints.questions_url : url)
+            api.rootApiEntryPoint + (url ? url : getters.entryPoints.questions_url)
           ).then(
             response => {
               commit(types.populateQuestions, {
                 items: response.data,
-                navigation: response.headers.link === undefined ? null : parseLinkHeader(response.headers.link)
+                navigation: response.headers === undefined || response.headers.link === undefined ? null : parseLinkHeader(response.headers.link)
               })
               commit(types.stopLoadingQuestions)
 
               commit(types.setStatus, 'questions loaded')
 
               resolve()
-            }, error => {
+            }, err => {
               commit(types.stopLoadingQuestions)
-              commit(types.setQuestionsLoadError, error)
+              commit(types.setQuestionsLoadError, err)
 
               commit(types.setStatus, 'questions error')
 
